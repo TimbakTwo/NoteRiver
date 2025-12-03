@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
@@ -11,7 +10,6 @@ const NoteDetailPage = () => {
   const [saving, setSaving] = useState(false);
 
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   useEffect(() => {
@@ -50,7 +48,6 @@ const NoteDetailPage = () => {
     }
 
     setSaving(true);
-
     try {
       await api.put(`/notes/${id}`, note);
       toast.success("Note updated successfully");
@@ -65,73 +62,88 @@ const NoteDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-base-200 flex items-center justify-center">
-        <LoaderIcon className="animate-spin size-10" />
+      <div className="min-h-screen bg-gradient-to-br from-base-200 to-base-300 flex items-center justify-center">
+        <LoaderIcon className="animate-spin size-10 text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-base-200">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <Link to="/" className="btn btn-ghost">
-              <ArrowLeftIcon className="h-5 w-5" />
-              Back to Notes
-            </Link>
-            <button
-              onClick={handleDelete}
-              className="btn btn-error btn-outline"
-            >
-              <Trash2Icon className="h-5 w-5" />
-              Delete Note
-            </button>
+    <div className="min-h-screen bg-gradient-to-br from-base-200 to-base-300 py-10">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary-focus transition-colors"
+          >
+            <ArrowLeftIcon className="h-5 w-5" />
+            Back to Notes
+          </Link>
+
+          <button
+            onClick={handleDelete}
+            className="inline-flex items-center gap-2 btn btn-error btn-outline"
+          >
+            <Trash2Icon className="h-5 w-5" />
+            Delete Note
+          </button>
+        </div>
+
+        {/* Card */}
+        <div className="bg-base-100 rounded-2xl shadow-lg p-6 sm:p-8 border border-base-content/10">
+          {/* Title */}
+          <div className="form-control mb-6">
+            <label className="label">
+              <span className="label-text font-medium text-base-content/80">
+                Title
+              </span>
+            </label>
+            <input
+              type="text"
+              placeholder="Note title"
+              className="input input-bordered input-lg rounded-lg text-base-content/90"
+              value={note.title}
+              onChange={(e) => setNote({ ...note, title: e.target.value })}
+            />
           </div>
 
-          <div className="card bg-base-100">
-            <div className="card-body">
-              <div className="form-control mb-4">
-                <label className="label">
-                  <span className="label-text">Title</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Note title"
-                  className="input input-bordered"
-                  value={note.title}
-                  onChange={(e) => setNote({ ...note, title: e.target.value })}
-                />
-              </div>
+          {/* Content */}
+          <div className="form-control mb-6">
+            <label className="label">
+              <span className="label-text font-medium text-base-content/80">
+                Content
+              </span>
+            </label>
+            <textarea
+              placeholder="Write your note here..."
+              className="textarea textarea-bordered h-40 rounded-lg text-base-content/90 resize-none"
+              value={note.content}
+              onChange={(e) => setNote({ ...note, content: e.target.value })}
+            />
+          </div>
 
-              <div className="form-control mb-4">
-                <label className="label">
-                  <span className="label-text">Content</span>
-                </label>
-                <textarea
-                  placeholder="Write your note here..."
-                  className="textarea textarea-bordered h-32"
-                  value={note.content}
-                  onChange={(e) =>
-                    setNote({ ...note, content: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="card-actions justify-end">
-                <button
-                  className="btn btn-primary"
-                  disabled={saving}
-                  onClick={handleSave}
-                >
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </div>
+          {/* Save button */}
+          <div className="flex justify-end">
+            <button
+              className="btn btn-primary btn-lg transition-transform hover:scale-[1.02] flex items-center gap-2"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? (
+                <>
+                  <LoaderIcon className="animate-spin size-5" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default NoteDetailPage;
